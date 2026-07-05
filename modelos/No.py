@@ -9,4 +9,5 @@ class No:
                      "c":0}
         self.visto= False
         self.explorado =False
+        self.caminhofinal = False
         self.filhos = []
