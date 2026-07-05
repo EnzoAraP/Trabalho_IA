@@ -17,17 +17,19 @@ class Labirinto:
         celula = self.pegar_celula(linha, coluna)
         if tipo == "inicio":
             if self.inicio:
-                self.inicio.tipo = "vazio"
+                self.inicio.estado = "vazio"
 
             self.inicio = celula
 
         elif tipo == "fim":
             if self.fim:
-                self.fim.tipo = "vazio"
-
+                self.fim.estado = "vazio"
+            if (self.inicio==celula):
+                self.inicio =None
+                
             self.fim = celula
 
-        celula.tipo = tipo
+        celula.estado = tipo
     
     def eh_posicao_validamover(self,linha,coluna):
         if(self.eh_parede(linha,coluna)=="parede"):
@@ -36,5 +38,5 @@ class Labirinto:
     def eh_posicao_validaparede(self,linha,coluna):
         return 0<= linha <self.linhas and 0 <= coluna <=coluna < self.colunas
     def eh_parede(self,linha,coluna):
-        return self.matriz[linha][coluna].tipo == "parede"
+        return self.matriz[linha][coluna].estado == "parede"
     
