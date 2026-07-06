@@ -53,6 +53,8 @@ class Algoritmos:
         for no in self.listaFinal:
             no.caminhofinal=True
             self.ao_visitar(no.valor[0],no.valor[1])
+    def manhatan(self,x,y):
+         return abs(x -self.labirinto.fim.valor[0]) + abs(y - self.labirinto.fim.valor[1])
             
     def movimentacao(self,Noatual,direcao,listaExplorados):#se estiver correto, só será mudado para o novo nó se ele não estiver adicionado na lista, se não retorna o atual.
         print("Entrou no Movimentacao")
@@ -245,3 +247,193 @@ class Algoritmos:
         if not sucesso:
             print("Fracasso: Caminho não encontrado pela Busca Ordenada.")
         return 0
+    
+    def busca_a_estrela(self):
+        print("Entrou na Busca A* (A-Star)")
+        
+        import heapq
+        
+        # ABERTOS: Fila de prioridade. 
+        # Formato: (f_score, contador_desempate, g_score, nó, pai_do_nó)
+        # Sendo f_score = g_score (custo real) + h_score (heurística)
+        abertos = []
+        contador = 0
+        
+        self.listaExplorados = [] 
+        self.listaVistos = []
+        self.listaFinal = [] 
+        
+        inicio = self.labirinto.inicio
+        fim = self.labirinto.fim
+        
+        inicio.pai = None 
+        
+        # O custo inicial (g) é 0. O f_score inicial é 0 + heuristica(inicio)
+        g_inicial = 0
+        h_inicial = self.manhatan(inicio.valor[0], inicio.valor[1])
+        f_inicial = g_inicial + h_inicial
+        
+        # Insere a raiz na fila
+        heapq.heappush(abertos, (f_inicial, contador, g_inicial, inicio, None))
+        
+        sucesso = False
+        
+        while abertos:
+            # Retira sempre o nó com o MENOR f_score total
+            f_atual, _, g_atual, atual, pai_do_atual = heapq.heappop(abertos)
+
+            h_atual = f_atual - g_atual
+            print(f"-> Explorando Nó {atual.valor}: g(n)={g_atual}, h(n)={h_atual}, f(n)={f_atual}")
+            
+            
+            if atual in self.listaExplorados:
+                continue
+            
+            if pai_do_atual is not None:
+                atual.pai = pai_do_atual
+            
+            atual.explorado = True
+            atual.visto = True
+            self.listaExplorados.append(atual)
+            self.listaVistos.append(atual)
+            
+            if atual != inicio:
+                self.ao_visitar(atual.valor[0], atual.valor[1])
+            
+            # Teste de objetivo
+            if atual.valor == fim.valor:
+                print("Resultado encontrado pela Busca A*!\n")
+                sucesso = True
+                self.reconstruir_caminho(atual)
+                self.pintarFinal()
+                break
+            
+            # Gerar filhos
+            movimentos = [
+                (atual.valor[0], atual.valor[1]+1), # Direita
+                (atual.valor[0]+1, atual.valor[1]), # Baixo
+                (atual.valor[0], atual.valor[1]-1), # Esquerda
+                (atual.valor[0]-1, atual.valor[1])  # Cima
+            ]
+            
+            for (l, c) in movimentos:
+                if self.labirinto.eh_posicao_validamover(l, c):
+                    vizinho = self.labirinto.pegar_celula(l, c)
+                    
+                    if vizinho not in self.listaExplorados:
+                        # O custo do passo (g) aumenta em 1 em relação ao pai
+                        novo_g = g_atual + 1 
+                        
+                        # Calcula a heurística (h) para o vizinho usando Manhattan
+                        h_vizinho = self.manhatan(vizinho.valor[0], vizinho.valor[1])
+                        
+                        # O novo custo total estimado (f) é a soma dos dois
+                        novo_f = novo_g + h_vizinho
+                        
+                        print(f"   Avaliando Vizinho {vizinho.valor}: g(n)={novo_g}, h(n)={h_vizinho}, f(n)={novo_f}")
+
+                        contador += 1 
+                        
+                        # Insere o vizinho com a nova prioridade (novo_f)
+                        heapq.heappush(abertos, (novo_f, contador, novo_g, vizinho, atual))
+                        
+        if not sucesso:
+            print("Fracasso: Caminho não encontrado pela Busca A*.")
+        return 0
+    
+    def busca_ida_estrela(self ,):
+        print("Entrou na Busca IDA* (Iterative Deepening A*)")
+        
+        inicio = self.labirinto.inicio
+        fim = self.labirinto.fim
+        
+        inicio.pai = None
+
+        verdadeiro_inicio = self.labirinto.pegar_celula(inicio.valor[0], inicio.valor[1])
+        verdadeiro_inicio.pai = None
+
+        self.listaFinal = []
+
+
+        # O limite inicial é apenas a estimativa (heurística) do início até ao fim
+        limite_f = self.manhatan(inicio.valor[0], inicio.valor[1])
+        
+        while True:
+            print(f"\n--- Iniciando iteração IDA* com limite f(n) = {limite_f} ---")
+            
+            # Limpamos as listas visuais para esta iteração específica
+            self.listaExplorados = []
+            self.listaVistos = []
+            
+            # Usamos um Set (conjunto) para rastrear o caminho atual e evitar ciclos (loops infinitos)
+            caminho_atual = set([verdadeiro_inicio]) 
+            
+            # Inicia a pesquisa em profundidade recursiva
+            sucesso, resultado = self._ida_pesquisa(verdadeiro_inicio, 0, limite_f, caminho_atual, fim)
+            
+            if sucesso:
+                print("\nResultado encontrado pela Busca IDA*!")
+                self.reconstruir_caminho(resultado)
+                self.pintarFinal()
+                return 1
+            elif resultado == float('inf'):
+                print("\nFracasso: Caminho não encontrado pela Busca IDA* (espaço esgotado).")
+                return 0
+            else:
+                # Se não encontrou, o novo limite passa a ser o menor f(n) que ultrapassou o limite anterior
+                limite_f = resultado 
+
+    def _ida_pesquisa(self, atual, g_atual, limite_f, caminho_atual, fim):
+        # Calcula o f(n) do nó atual
+        h_atual = self.manhatan(atual.valor[0], atual.valor[1])
+        f_atual = g_atual + h_atual
+        
+        # Para visualização na interface gráfica
+        if atual not in self.listaExplorados:
+            self.listaExplorados.append(atual)
+            self.listaVistos.append(atual)
+            if atual != self.labirinto.inicio:
+                self.ao_visitar(atual.valor[0], atual.valor[1])
+                
+        print(f"-> Explorando Nó {atual.valor}: g(n)={g_atual}, h(n)={h_atual}, f(n)={f_atual} (Limite: {limite_f})")
+        
+        # CORTE: Se o f(n) deste nó exceder o limite atual, paramos de explorar este ramo
+        if f_atual > limite_f:
+            return (False, f_atual)
+            
+        if atual.valor == fim.valor:
+            return (True, atual)  # Retorna o nó final encontrado
+            
+        # Variável para rastrear o menor f(n) que excedeu o limite nos filhos
+        min_limite_excedido = float('inf')
+        
+        movimentos = [
+            (atual.valor[0], atual.valor[1]+1), # Direita
+            (atual.valor[0]+1, atual.valor[1]), # Baixo
+            (atual.valor[0], atual.valor[1]-1), # Esquerda
+            (atual.valor[0]-1, atual.valor[1])  # Cima
+        ]
+        
+        for (l, c) in movimentos:
+            if self.labirinto.eh_posicao_validamover(l, c):
+                vizinho = self.labirinto.pegar_celula(l, c)
+                
+                # Só exploramos se o vizinho não estiver no caminho atual (evita vai e vem)
+                if vizinho not in caminho_atual:
+                    vizinho.pai = atual
+                    caminho_atual.add(vizinho)
+                    
+                    # Chamada recursiva descendo um nível em profundidade (g_atual + 1)
+                    sucesso, resultado = self._ida_pesquisa(vizinho, g_atual + 1, limite_f, caminho_atual, fim)
+                    
+                    if sucesso:
+                        return (True, resultado)
+                        
+                    # Atualizamos o menor limite excedido
+                    if resultado < min_limite_excedido:
+                        min_limite_excedido = resultado
+                        
+                    # Backtracking: remove do caminho atual ao retroceder
+                    caminho_atual.remove(vizinho)
+                    
+        return (False, min_limite_excedido)

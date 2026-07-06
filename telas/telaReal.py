@@ -249,9 +249,9 @@ class Janela(QWidget):
             case "Busca Gulosa":
                 nada= None
             case "Busca A*":
-                nada= None
+                self.algoritmo.busca_a_estrela()
             case "Busca IDA":
-                nada= None
+                self.algoritmo.busca_ida_estrela()
                 
                             
         
