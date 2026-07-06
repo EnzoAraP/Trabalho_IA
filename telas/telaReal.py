@@ -37,6 +37,7 @@ class Janela(QWidget):
         gulosa =menu.addAction("Busca Gulosa;")
         a =menu.addAction("Busca A*")
         ida =menu.addAction("Busca IDA*")
+        gulosamateria=menu.addAction("Busca Gulosa por vizinhos")
         backtracking.triggered.connect(lambda: self.menu("backtracking"))
         buscaLarg.triggered.connect(lambda: self.menu("buscaLarg"))
         Profindidade.triggered.connect(lambda: self.menu("Profindidade"))
@@ -44,6 +45,7 @@ class Janela(QWidget):
         gulosa.triggered.connect(lambda: self.menu("gulosa"))
         a.triggered.connect(lambda: self.menu("a"))
         ida.triggered.connect(lambda: self.menu("ida"))
+        gulosamateria.triggered.connect(lambda: self.menu("gulosaMateria"))
         self.button.setMenu(menu)
         grid_botoes = QWidget()
         grid = QGridLayout(grid_botoes)
@@ -176,13 +178,17 @@ class Janela(QWidget):
             f"background-color: {cores[estadosalvo.estado]}; border: 1px solid black;"
         )
     def atualizar_quadrado(self,linha,coluna):
-        print("Entrou atualizar_quadrado")
+        print("entrouaqui")
         celula = self.labirinto.pegar_celula(linha, coluna)
         quadrado = self.quadrados[linha][coluna]
         if(celula.visto==True):
             print(f"visto true do {linha},{coluna}")
             quadrado.setStyleSheet("background-color: lightblue; border: 1px solid black;")
+<<<<<<< HEAD
         if(celula.explorado == True):
+=======
+        if(celula.explorado ==True):
+>>>>>>> main
             quadrado.setStyleSheet("background-color: DarkGreen; border: 1px solid black;")
         if(celula.caminhofinal==True):
             quadrado.setStyleSheet("background-color: yellow; border: 1px solid black;")
@@ -190,6 +196,7 @@ class Janela(QWidget):
         
         
     def menu(self,escolha):
+        
         match escolha:
             case "backtracking":
                 self.button.setText("Backtracking")
@@ -219,6 +226,15 @@ class Janela(QWidget):
                 self.button.setText("Busca IDA")
                 self.labelFrame.setText("Busca IDA")
                 self.liberado=True
+            case "gulosaMateria":
+                a = self.labirinto.pegar_celula(6, 9)
+                b = self.labirinto.pegar_celula(6, 9)
+
+                print(a is b)
+                self.button.setText("Busca Gulosa por vizinhos")
+                self.labelFrame.setText("Busca Gulosa por vizinhos")
+                self.liberado=True
+                
     def clicar_iniciar(self):
         cores = {
             "vazio": "white",
@@ -244,17 +260,23 @@ class Janela(QWidget):
             case "Backtracking":
                 self.algoritmo.backtracking()
             case "Busca em Largura":
-                nada= None
+                self.algoritmo.buscaLargura()
             case "Busca em Profundidade (Limitada)":
                 self.algoritmo.busca_profundidade_limitada(10)
             case "Busca Ordenada":
                 self.algoritmo.busca_ordenada()
             case "Busca Gulosa":
-                nada= None
+                self.algoritmo.buscagulosa()
             case "Busca A*":
                 self.algoritmo.busca_a_estrela()
             case "Busca IDA":
+<<<<<<< HEAD
                 self.algoritmo.busca_ida_estrela()
+=======
+                nada= None
+            case "Busca Gulosa por vizinhos":
+                self.algoritmo.buscagulosaMateria()
+>>>>>>> main
                 
                             
         
