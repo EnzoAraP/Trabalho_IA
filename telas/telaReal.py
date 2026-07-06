@@ -182,8 +182,11 @@ class Janela(QWidget):
         if(celula.visto==True):
             print(f"visto true do {linha},{coluna}")
             quadrado.setStyleSheet("background-color: lightblue; border: 1px solid black;")
+        if(celula.explorado == True):
+            quadrado.setStyleSheet("background-color: DarkGreen; border: 1px solid black;")
         if(celula.caminhofinal==True):
             quadrado.setStyleSheet("background-color: yellow; border: 1px solid black;")
+        
         
         
     def menu(self,escolha):

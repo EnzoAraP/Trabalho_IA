@@ -124,6 +124,7 @@ class Algoritmos:
             
             atual.explorado = True
             atual.visto = True
+            self.pintar(atual.valor[0], atual.valor[1])
             self.listaExplorados.append(atual)
             self.listaVistos.append(atual)
             
@@ -207,6 +208,7 @@ class Algoritmos:
             # Nó se torna FECHADO
             atual.explorado = True
             atual.visto = True
+            self.pintar(atual.valor[0], atual.valor[1])
             self.listaExplorados.append(atual)
             self.listaVistos.append(atual)
             
@@ -294,6 +296,7 @@ class Algoritmos:
             
             atual.explorado = True
             atual.visto = True
+            self.pintar(atual.valor[0], atual.valor[1])
             self.listaExplorados.append(atual)
             self.listaVistos.append(atual)
             
