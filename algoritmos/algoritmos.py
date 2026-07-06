@@ -12,15 +12,16 @@ class Algoritmos:
     def __init__(self, labirinto, ao_visitar):
         self.labirinto = labirinto
         self.ao_visitar = ao_visitar
+        listaVisto = []
+        self.listaFinal = []
     def backtracking(self):
         print("Entrou no backtracking")
         atual= self.labirinto.inicio
         estadoInicial = atual.valor
         estadoFinal = self.labirinto.fim.valor
-        listaVisto = []
-        self.listaFinal = []
+        
         sequenciamento= ("d","b","e","c")
-        listaVisto.append(atual)
+        self.listaVisto.append(atual)
         fracasso = False
         sucesso = False
         proximo = None
@@ -31,7 +32,7 @@ class Algoritmos:
                 for direcao,valor in atual.regra.items():
                     if valor==0:
                         atual.regra[direcao] = 1
-                        atual=self.movimentacao(atual,direcao,listaVisto)#será igual a ele mesmo se ja o prox ja estiver presente ( não tem o por que reexplora-lo) ou o novo se for um nó novo
+                        atual=self.movimentacao(atual,direcao,self.listaVisto)#será igual a ele mesmo se ja o prox ja estiver presente ( não tem o por que reexplora-lo) ou o novo se for um nó novo
                         break
                 if(atual.valor == estadoFinal):
                     print("Resultado encontrado!\n")
