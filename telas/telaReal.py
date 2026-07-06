@@ -243,9 +243,9 @@ class Janela(QWidget):
             case "Busca em Largura":
                 nada= None
             case "Busca em Profundidade (Limitada)":
-                nada= None
+                self.algoritmo.busca_profundidade_limitada(10)
             case "Busca Ordenada":
-                nada= None
+                self.algoritmo.busca_ordenada()
             case "Busca Gulosa":
                 nada= None
             case "Busca A*":
