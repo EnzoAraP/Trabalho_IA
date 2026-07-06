@@ -176,12 +176,14 @@ class Janela(QWidget):
             f"background-color: {cores[estadosalvo.estado]}; border: 1px solid black;"
         )
     def atualizar_quadrado(self,linha,coluna):
-        print("Entrou atualizar_quadrado")
+        print("entrouaqui")
         celula = self.labirinto.pegar_celula(linha, coluna)
         quadrado = self.quadrados[linha][coluna]
         if(celula.visto==True):
             print(f"visto true do {linha},{coluna}")
             quadrado.setStyleSheet("background-color: lightblue; border: 1px solid black;")
+        if(celula.explorado ==True):
+            quadrado.setStyleSheet("background-color: DarkGreen; border: 1px solid black;")
         if(celula.caminhofinal==True):
             quadrado.setStyleSheet("background-color: yellow; border: 1px solid black;")
         
@@ -247,7 +249,7 @@ class Janela(QWidget):
             case "Busca Ordenada":
                 nada= None
             case "Busca Gulosa":
-                nada= None
+                self.algoritmo.buscagulosa()
             case "Busca A*":
                 nada= None
             case "Busca IDA":
