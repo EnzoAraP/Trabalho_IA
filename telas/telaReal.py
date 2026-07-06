@@ -176,6 +176,7 @@ class Janela(QWidget):
             f"background-color: {cores[estadosalvo.estado]}; border: 1px solid black;"
         )
     def atualizar_quadrado(self,linha,coluna):
+        print("Entrou atualizar_quadrado")
         celula = self.labirinto.pegar_celula(linha, coluna)
         quadrado = self.quadrados[linha][coluna]
         if(celula.visto==True):

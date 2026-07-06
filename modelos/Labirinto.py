@@ -32,9 +32,15 @@ class Labirinto:
         celula.estado = tipo
     
     def eh_posicao_validamover(self,linha,coluna):
-        if(self.eh_parede(linha,coluna)=="parede"):
+        print(f"valor linha {linha},valor coluna {coluna}")
+        print(0<= linha <self.linhas and 0 <= coluna  < self.colunas )
+        if(not(0<= linha <self.linhas and 0 <= coluna  < self.colunas) ):
             return False
-        return 0<= linha <self.linhas and 0 <= coluna <=coluna < self.colunas
+        print(self.eh_parede(linha,coluna))
+        if(self.eh_parede(linha,coluna)):
+            return False
+        return True
+        
     def eh_posicao_validaparede(self,linha,coluna):
         return 0<= linha <self.linhas and 0 <= coluna <=coluna < self.colunas
     def eh_parede(self,linha,coluna):
