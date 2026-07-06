@@ -10,9 +10,10 @@ from modelos.Labirinto import Labirinto
 matrizLabirinto = np.zeros((10,10))
 
 class Algoritmos:
-    def __init__(self, labirinto, ao_visitar):
+    def __init__(self, labirinto, ao_visitar, pintar):
         self.labirinto = labirinto
         self.ao_visitar = ao_visitar
+        self.pintar = pintar
         self.listaExplorados = []
         self.listaVistos = []
         self.listaFinal = []
