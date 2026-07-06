@@ -1,8 +1,9 @@
-from PyQt6.QtWidgets import QApplication, QWidget, QPushButton,QMenu, QLabel,QLineEdit,QVBoxLayout,QGridLayout,QHBoxLayout,QStackedWidget,QFrame
+from PyQt6.QtWidgets import QApplication, QWidget, QPushButton,QMenu, QLabel,QLineEdit,QVBoxLayout,QGridLayout,QHBoxLayout,QStackedWidget,QFrame,QMessageBox
 from PyQt6.QtGui import QIcon,QFont,QPixmap,QPainter
 from PyQt6.QtCore import QSize,Qt
 import sys
 import os
+import time
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from modelos.No import No
 from modelos.Labirinto import Labirinto
@@ -178,21 +179,16 @@ class Janela(QWidget):
             f"background-color: {cores[estadosalvo.estado]}; border: 1px solid black;"
         )
     def atualizar_quadrado(self,linha,coluna):
-        print("entrouaqui")
+        
         celula = self.labirinto.pegar_celula(linha, coluna)
         quadrado = self.quadrados[linha][coluna]
         if(celula.visto==True):
             print(f"visto true do {linha},{coluna}")
             quadrado.setStyleSheet("background-color: lightblue; border: 1px solid black;")
-<<<<<<< HEAD
-        if(celula.explorado == True):
-=======
         if(celula.explorado ==True):
->>>>>>> main
             quadrado.setStyleSheet("background-color: DarkGreen; border: 1px solid black;")
         if(celula.caminhofinal==True):
             quadrado.setStyleSheet("background-color: yellow; border: 1px solid black;")
-        
         
         
     def menu(self,escolha):
@@ -256,30 +252,58 @@ class Janela(QWidget):
                             self.quadrados[i][j].setStyleSheet("background-color: red; border: 1px solid black;")
             self.stack.setCurrentWidget(self.pagina2)      
     def clicar_calcular(self):
+        inicio = time.perf_counter()
         match self.labelFrame.text():
             case "Backtracking":
                 self.algoritmo.backtracking()
+                fim = time.perf_counter()
+                tempo = fim - inicio
+                self.mostrar_tempo(tempo)
             case "Busca em Largura":
                 self.algoritmo.buscaLargura()
+                fim = time.perf_counter()
+                tempo = fim - inicio
+                self.mostrar_tempo(tempo)
+                
             case "Busca em Profundidade (Limitada)":
-                self.algoritmo.busca_profundidade_limitada(10)
+                self.algoritmo.busca_profundidade_limitada(5)
+                fim = time.perf_counter()
+                tempo = fim - inicio
+                self.mostrar_tempo(tempo)
             case "Busca Ordenada":
                 self.algoritmo.busca_ordenada()
+                fim = time.perf_counter()
+                tempo = fim - inicio
+                self.mostrar_tempo(tempo)
             case "Busca Gulosa":
                 self.algoritmo.buscagulosa()
+                fim = time.perf_counter()
+                tempo = fim - inicio
+                self.mostrar_tempo(tempo)
             case "Busca A*":
                 self.algoritmo.busca_a_estrela()
+                fim = time.perf_counter()
+                tempo = fim - inicio
+                self.mostrar_tempo(tempo)
             case "Busca IDA":
-<<<<<<< HEAD
                 self.algoritmo.busca_ida_estrela()
-=======
-                nada= None
+                fim = time.perf_counter()
+                tempo = fim - inicio
+                self.mostrar_tempo(tempo)
             case "Busca Gulosa por vizinhos":
                 self.algoritmo.buscagulosaMateria()
->>>>>>> main
-                
-                            
-        
+                fim = time.perf_counter()
+                tempo = fim - inicio
+                self.mostrar_tempo(tempo)
+    def mostrar_tempo(self, tempo):
+        msg = QMessageBox(self)
+        msg.setWindowTitle("Resultado")
+        msg.setText(f"O algoritmo levou {tempo:.4f} segundos.")
+        msg.setIcon(QMessageBox.Icon.Information)
+        msg.exec()           
+    
+          
+    
 app = QApplication(sys.argv)
 janela = Janela()
 janela.show()

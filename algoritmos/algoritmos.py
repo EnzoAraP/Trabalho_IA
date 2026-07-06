@@ -7,6 +7,7 @@ from modelos.No import No
 from modelos.Labirinto import Labirinto
 
 
+
 matrizLabirinto = np.zeros((10,10))
 
 class Algoritmos:
