@@ -37,6 +37,7 @@ class Janela(QWidget):
         gulosa =menu.addAction("Busca Gulosa;")
         a =menu.addAction("Busca A*")
         ida =menu.addAction("Busca IDA*")
+        gulosamateria=menu.addAction("Busca Gulosa por vizinhos")
         backtracking.triggered.connect(lambda: self.menu("backtracking"))
         buscaLarg.triggered.connect(lambda: self.menu("buscaLarg"))
         Profindidade.triggered.connect(lambda: self.menu("Profindidade"))
@@ -44,6 +45,7 @@ class Janela(QWidget):
         gulosa.triggered.connect(lambda: self.menu("gulosa"))
         a.triggered.connect(lambda: self.menu("a"))
         ida.triggered.connect(lambda: self.menu("ida"))
+        gulosamateria.triggered.connect(lambda: self.menu("gulosaMateria"))
         self.button.setMenu(menu)
         grid_botoes = QWidget()
         grid = QGridLayout(grid_botoes)
@@ -189,6 +191,7 @@ class Janela(QWidget):
         
         
     def menu(self,escolha):
+        
         match escolha:
             case "backtracking":
                 self.button.setText("Backtracking")
@@ -218,6 +221,15 @@ class Janela(QWidget):
                 self.button.setText("Busca IDA")
                 self.labelFrame.setText("Busca IDA")
                 self.liberado=True
+            case "gulosaMateria":
+                a = self.labirinto.pegar_celula(6, 9)
+                b = self.labirinto.pegar_celula(6, 9)
+
+                print(a is b)
+                self.button.setText("Busca Gulosa por vizinhos")
+                self.labelFrame.setText("Busca Gulosa por vizinhos")
+                self.liberado=True
+                
     def clicar_iniciar(self):
         cores = {
             "vazio": "white",
@@ -243,7 +255,7 @@ class Janela(QWidget):
             case "Backtracking":
                 self.algoritmo.backtracking()
             case "Busca em Largura":
-                nada= None
+                self.algoritmo.buscaLargura()
             case "Busca em Profundidade (Limitada)":
                 nada= None
             case "Busca Ordenada":
@@ -254,6 +266,8 @@ class Janela(QWidget):
                 nada= None
             case "Busca IDA":
                 nada= None
+            case "Busca Gulosa por vizinhos":
+                self.algoritmo.buscagulosaMateria()
                 
                             
         

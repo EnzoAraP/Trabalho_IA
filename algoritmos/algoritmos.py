@@ -72,11 +72,13 @@ class Algoritmos:
         print(f"estado atual da lista de explorados:{self.listaExplorados}")
     
         if (presentenalista): #caso já esteja na lista de presentes, apenas poe que tal nó é um dos filhos do nó atual
-            filho = next((no for no in self.listaExplorados if no.valor== novovalor))
-            Noatual.filhos.append(filho)
+            #filho = next((no for no in self.listaExplorados if no.valor== novovalor))
+            #Noatual.filhos.append(filho)
+            print("manterifvivo")
+            
         if not presentenalista and novovalor!=None: #caso o nó não esteja presente na lista, ele é criado com o atual sendo o pai e aidiconado na lista de vistos
-            filho = next((no for no in self.listaExplorados if no.valor== novovalor))
-            Noatual.filhos.append(filho)
+            #filho = next((no for no in self.listaExplorados if no.valor== novovalor))
+            #Noatual.filhos.append(filho)
             Novono = self.labirinto.pegar_celula(novovalor[0],novovalor[1])
             Novono.pai =Noatual
             Novono.explorado=True
@@ -96,7 +98,7 @@ class Algoritmos:
             return(None)
     def manhatan(self,x,y):
          return abs(x -self.labirinto.fim.valor[0]) + abs(y - self.labirinto.fim.valor[1])
-    def VerificacaoVistos(self,Noatual):
+    def VerificacaoVistos(self,Noatual,usarlistavizinhos=False):
         for direcao,valor in Noatual.regra.items():
             match direcao:
                 case "d":# = direita
@@ -109,15 +111,21 @@ class Algoritmos:
                             print("ja presente")
                             #filho = next((no for no in self.listaVisto if no.valor== novovalor))
                             #Noatual.filhos.append(filho)
+                            if(usarlistavizinhos==True):
+                                Novono = self.labirinto.pegar_celula(novovalor[0],novovalor[1])
+                                self.listavizinhosatuais.append(Novono)
                         if not presentenalistaVistos and novovalor!=None: #caso o nó não esteja presente na lista, ele é criado com o atual sendo o pai e aidiconado na lista de vistos
                             #filho = next((no for no in self.listaVisto if no.valor== novovalor))
                             #Noatual.filhos.append(filho)
                             Novono = self.labirinto.pegar_celula(novovalor[0],novovalor[1])
+                            
                             Novono.pai =Noatual
                             Novono.visto=True
                             Novono.heuristica = heuristica
                             self.pintar(novovalor[0],novovalor[1])
                             self.listaVisto.append(Novono)
+                            if(usarlistavizinhos==True):
+                                self.listavizinhosatuais.append(Novono)
                             print("adicionado na lsitavisto")
                 case "b":#  = baixo
                     novovalor = self.verificapossibilidade(Noatual.valor[0]+1,Noatual.valor[1])
@@ -129,6 +137,9 @@ class Algoritmos:
                             print("ja presente")
                             #filho = next((no for no in self.listaVisto if no.valor== novovalor))
                             #Noatual.filhos.append(filho)
+                            if(usarlistavizinhos==True):
+                                Novono = self.labirinto.pegar_celula(novovalor[0],novovalor[1])
+                                self.listavizinhosatuais.append(Novono)
                         if not presentenalistaVistos and novovalor!=None: #caso o nó não esteja presente na lista, ele é criado com o atual sendo o pai e aidiconado na lista de vistos
                             #filho = next((no for no in self.listaVisto if no.valor== novovalor))
                             #Noatual.filhos.append(filho)
@@ -136,8 +147,11 @@ class Algoritmos:
                             Novono.pai =Noatual
                             Novono.visto=True
                             Novono.heuristica = heuristica
+                            
                             self.pintar(novovalor[0],novovalor[1])
                             self.listaVisto.append(Novono)
+                            if(usarlistavizinhos==True):
+                                self.listavizinhosatuais.append(Novono)
                 case "e":# = esquerda
                     novovalor = self.verificapossibilidade(Noatual.valor[0],Noatual.valor[1]-1)
                     
@@ -148,6 +162,9 @@ class Algoritmos:
                             print("ja presente")
                             #filho = next((no for no in self.listaVisto if no.valor== novovalor))
                             #Noatual.filhos.append(filho)
+                            if(usarlistavizinhos==True):
+                                Novono = self.labirinto.pegar_celula(novovalor[0],novovalor[1])
+                                self.listavizinhosatuais.append(Novono)
                         if not presentenalistaVistos and novovalor!=None: #caso o nó não esteja presente na lista, ele é criado com o atual sendo o pai e aidiconado na lista de vistos
                             #filho = next((no for no in self.listaVisto if no.valor== novovalor))
                             #Noatual.filhos.append(filho)
@@ -157,6 +174,8 @@ class Algoritmos:
                             Novono.heuristica = heuristica
                             self.pintar(novovalor[0],novovalor[1])
                             self.listaVisto.append(Novono)
+                            if(usarlistavizinhos==True):
+                                self.listavizinhosatuais.append(Novono)
                 case "c":# = cima
                     novovalor = self.verificapossibilidade(Noatual.valor[0]-1,Noatual.valor[1])
                     
@@ -167,6 +186,9 @@ class Algoritmos:
                             print("ja presente")
                             #filho = next((no for no in self.listaVisto if no.valor== novovalor))
                             #Noatual.filhos.append(filho)
+                            if(usarlistavizinhos==True):
+                                Novono = self.labirinto.pegar_celula(novovalor[0],novovalor[1])
+                                self.listavizinhosatuais.append(Novono)
                         if not presentenalistaVistos and novovalor!=None: #caso o nó não esteja presente na lista, ele é criado com o atual sendo o pai e aidiconado na lista de vistos
                             #filho = next((no for no in self.listaVisto if no.valor== novovalor))
                             #Noatual.filhos.append(filho)
@@ -177,6 +199,8 @@ class Algoritmos:
                             print(f"se o valor de novovisitado é true:{Novono.visto}")
                             self.pintar(Novono.valor[0],Novono.valor[1])
                             self.listaVisto.append(Novono)
+                            if(usarlistavizinhos==True):
+                                self.listavizinhosatuais.append(Novono)
                     
         
     def CaminhoFinal(self):
@@ -223,5 +247,99 @@ class Algoritmos:
                 fracasso=True
                 print("fracasso")
                 break
-        
+    def buscagulosaMateria(self):
+        print("Entrou na buscagulosaMateria")
+        atual= self.labirinto.inicio
+        estadoInicial = atual.valor
+        estadoFinal = self.labirinto.fim.valor
+        self.listavizinhosatuais = []
+        atual.heuristica = self.manhatan(atual.valor[0],atual.valor[1])
+        sequenciamento= ("d","b","e","c")
+        self.listaVisto.append(atual)
+        self.listaExplorados.append(atual)
+        fracasso = False
+        sucesso = False
+        proximo = None
+        discarte = None
+        print(atual.valor)
+        while((not fracasso and not sucesso)):
+            self.VerificacaoVistos(atual,True)
+           
+            menor = min(
+            (no for no in self.listavizinhosatuais if no not in self.listaExplorados),
+            key=lambda no: no.heuristica,
+            default=None
+            )
+            
+            if menor!=None:
+                if menor.valor==estadoFinal:
+                    sucesso=True
+                    print("sucesso")
+                    self.CaminhoFinal()
+                    break
+                menor.explorado=True
+                self.pintar(menor.valor[0],menor.valor[1])
+                atual=menor
+                self.listaExplorados.append(atual)
+                self.listavizinhosatuais.clear()
+            else:
+                if atual.valor == estadoInicial:
+                    print("Retnou pro pai inicial,erro")
+                    fracasso = True
+                    break
+                else:
+                    atual = atual.pai
+                    self.listavizinhosatuais.clear()
+                    self.VerificacaoVistos(atual, True)
+    def buscaLargura(self):
+        print("Entrou no backtracking")
+        atual= self.labirinto.inicio
+        estadoInicial = atual.valor
+        estadoFinal = self.labirinto.fim.valor
+        self.listaVisto = []
+        self.listaExplorados =[]
+        sequenciamento= ("d","b","e","c")
+        self.listaVisto.append(atual)
+        fracasso = False
+        sucesso = False
+        proximo = None
+        print(atual.valor)
+        while((not fracasso and not sucesso)):
+            if not self.listaVisto:
+                print("Fracasso")
+                fracasso=True
+            else: 
+                atual=self.listaVisto.pop(0)
+                if atual.valor==estadoFinal:
+                    print("Sucesso")
+                    sucesso=True
+                    self.CaminhoFinal()
+                else:
+                    if(atual.regra.get("d")==0 or atual.regra.get("b")==0 or atual.regra.get("e")==0  or atual.regra.get("c")==0 ):
+                        for direcao,valor in atual.regra.items():
+                            if valor==0:
+                                atual.regra[direcao] = 1
+                                
+                                match direcao:
+                                    case "d":# = direita
+                                        novovalor = self.verificapossibilidade(atual.valor[0],atual.valor[1]+1)
+                                    case "b":#  = baixo
+                                        novovalor = self.verificapossibilidade(atual.valor[0]+1,atual.valor[1])
+                                    case "e":# = esquerda
+                                        novovalor = self.verificapossibilidade(atual.valor[0],atual.valor[1]-1)
+                                    case "c":# = cima
+                                        novovalor = self.verificapossibilidade(atual.valor[0]-1,atual.valor[1])
+                                if(novovalor):
+                                    novoNo = self.labirinto.pegar_celula(novovalor[0],novovalor[1])
+                                    if(not novoNo.visto):
+                                        novoNo.visto=True
+                                        novoNo.pai=atual
+                                        self.pintar(novovalor[0],novovalor[1])
+                                        self.listaVisto.append(novoNo)
+                                    
+                    self.listaExplorados.append(atual)
+                    atual.explorado=True
+                    self.pintar(atual.valor[0],atual.valor[1])
+            
+           
 

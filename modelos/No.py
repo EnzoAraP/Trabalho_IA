@@ -7,6 +7,7 @@ class No:
                      "b":0,
                      "e":0,
                      "c":0}
+        self.heuristica=None
         self.visto= False
         self.explorado =False
         self.caminhofinal = False
