@@ -10,9 +10,8 @@ from modelos.Labirinto import Labirinto
 matrizLabirinto = np.zeros((10,10))
 
 class Algoritmos:
-    def __init__(self, labirinto, ao_visitar, pintar):
+    def __init__(self, labirinto, pintar):
         self.labirinto = labirinto
-        self.ao_visitar = ao_visitar
         self.pintar = pintar
         self.listaExplorados = []
         self.listaVistos = []
@@ -53,7 +52,7 @@ class Algoritmos:
     def pintarFinal(self):
         for no in self.listaFinal:
             no.caminhofinal=True
-            self.ao_visitar(no.valor[0],no.valor[1])
+            self.pintar(no.valor[0],no.valor[1])
     def manhatan(self,x,y):
          return abs(x -self.labirinto.fim.valor[0]) + abs(y - self.labirinto.fim.valor[1])
             
@@ -81,7 +80,7 @@ class Algoritmos:
             Novono = self.labirinto.pegar_celula(novovalor[0],novovalor[1])
             Novono.pai =Noatual
             Novono.visto=True
-            self.ao_visitar(novovalor[0],novovalor[1])
+            self.pintar(novovalor[0],novovalor[1])
             self.listaFinal.append(Novono)
             listaExplorados.append(Novono)
             return Novono
@@ -124,14 +123,11 @@ class Algoritmos:
                 atual.pai = pai_do_atual
             
             atual.explorado = True
-            atual.visto = True
-            self.pintar(atual.valor[0], atual.valor[1])
             self.listaExplorados.append(atual)
             self.listaVistos.append(atual)
-            
-            
-            if atual != inicio:
-                self.ao_visitar(atual.valor[0], atual.valor[1])
+
+            if atual.valor != inicio.valor and atual.valor != fim.valor:
+                self.pintar(atual.valor[0], atual.valor[1])
             
             if atual.valor == fim.valor:
                 print("Resultado encontrado pelo DFS Limitado!\n")
@@ -156,8 +152,10 @@ class Algoritmos:
                         
                         # Só adicionamos aos ABERTOS (pilha) se ele ainda não foi FECHADO
                         if vizinho not in self.listaExplorados:
-                            vizinho.pai = atual 
-                            # Adiciona em ABERTOS (Pilha), mas NÃO marca como explorado ainda!
+                            vizinho.visto = True
+                            if vizinho.valor != inicio.valor and vizinho.valor != fim.valor:
+                                self.pintar(vizinho.valor[0], vizinho.valor[1])
+                                
                             pilha.append((vizinho, profundidade + 1, atual))
                         
         if not sucesso:
@@ -208,13 +206,11 @@ class Algoritmos:
             
             # Nó se torna FECHADO
             atual.explorado = True
-            atual.visto = True
-            self.pintar(atual.valor[0], atual.valor[1])
             self.listaExplorados.append(atual)
             self.listaVistos.append(atual)
             
-            if atual != inicio:
-                self.ao_visitar(atual.valor[0], atual.valor[1])
+            if atual.valor != inicio.valor and atual.valor != fim.valor:
+                self.pintar(atual.valor[0], atual.valor[1])
             
             # Teste de objetivo
             if atual.valor == fim.valor:
@@ -237,6 +233,9 @@ class Algoritmos:
                     vizinho = self.labirinto.pegar_celula(l, c)
                     
                     if vizinho not in self.listaExplorados:
+                        vizinho.visto = True
+                        if vizinho.valor != inicio.valor and vizinho.valor != fim.valor:
+                            self.pintar(vizinho.valor[0], vizinho.valor[1])
                         # O custo do passo para uma casa normal é 1
                         custo_do_passo = 1 
                         novo_custo = custo_atual + custo_do_passo
@@ -296,15 +295,12 @@ class Algoritmos:
                 atual.pai = pai_do_atual
             
             atual.explorado = True
-            atual.visto = True
-            self.pintar(atual.valor[0], atual.valor[1])
             self.listaExplorados.append(atual)
             self.listaVistos.append(atual)
+
+            if atual.valor != inicio.valor and atual.valor != fim.valor:
+                self.pintar(atual.valor[0], atual.valor[1])
             
-            if atual != inicio:
-                self.ao_visitar(atual.valor[0], atual.valor[1])
-            
-            # Teste de objetivo
             if atual.valor == fim.valor:
                 print("Resultado encontrado pela Busca A*!\n")
                 sucesso = True
@@ -325,6 +321,10 @@ class Algoritmos:
                     vizinho = self.labirinto.pegar_celula(l, c)
                     
                     if vizinho not in self.listaExplorados:
+
+                        vizinho.visto = True
+                        if vizinho.valor != inicio.valor and vizinho.valor != fim.valor:
+                            self.pintar(vizinho.valor[0], vizinho.valor[1])
                         # O custo do passo (g) aumenta em 1 em relação ao pai
                         novo_g = g_atual + 1 
                         
@@ -394,10 +394,12 @@ class Algoritmos:
         
         # Para visualização na interface gráfica
         if atual not in self.listaExplorados:
+            atual.explorado = True
             self.listaExplorados.append(atual)
             self.listaVistos.append(atual)
-            if atual != self.labirinto.inicio:
-                self.ao_visitar(atual.valor[0], atual.valor[1])
+
+            if atual.valor != self.labirinto.inicio.valor and atual.valor != self.labirinto.fim.valor:
+                self.pintar(atual.valor[0], atual.valor[1])
                 
         print(f"-> Explorando Nó {atual.valor}: g(n)={g_atual}, h(n)={h_atual}, f(n)={f_atual} (Limite: {limite_f})")
         
@@ -424,7 +426,10 @@ class Algoritmos:
                 
                 # Só exploramos se o vizinho não estiver no caminho atual (evita vai e vem)
                 if vizinho not in caminho_atual:
-                    vizinho.pai = atual
+                    vizinho.visto = True
+                    if vizinho.valor != self.labirinto.inicio.valor and vizinho.valor != self.labirinto.fim.valor:
+                            self.pintar(vizinho.valor[0], vizinho.valor[1])
+                    vizinho.pai = atual  # Define o pai do vizinho como o nó atual
                     caminho_atual.add(vizinho)
                     
                     # Chamada recursiva descendo um nível em profundidade (g_atual + 1)
