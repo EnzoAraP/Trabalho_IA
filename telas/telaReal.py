@@ -342,16 +342,20 @@ class Janela(QWidget):
                     nada=self.algoritmo.buscaLargura()
                     return nada
                 case "Busca em Profundidade (Limitada)":
-                    self.algoritmo.busca_profundidade_limitada(5)
+                    dados = self.algoritmo.busca_profundidade_limitada(5)
+                    return dados
                 case "Busca Ordenada":
-                    self.algoritmo.busca_ordenada()
+                    dados = self.algoritmo.busca_ordenada()
+                    return dados
                 case "Busca Gulosa":
                     nada=self.algoritmo.buscagulosa()
                     return nada
                 case "Busca A*":
-                    self.algoritmo.busca_a_estrela()
+                    dados = self.algoritmo.busca_a_estrela()
+                    return dados
                 case "Busca IDA":
-                    self.algoritmo.busca_ida_estrela()
+                    dados = self.algoritmo.busca_ida_estrela()
+                    return dados
                     
     def dezInteracoes(self):
         tempos =[]
