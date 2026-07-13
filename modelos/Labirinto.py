@@ -44,23 +44,28 @@ class Labirinto:
         quantidadetotal=0
         for i in range (self.linhas):
             for j in range (self.colunas):
+                
                 no = self.matriz[i][j]
-                quantidade =len(no.filhos)
-                quantidadetotal =quantidadetotal + quantidade
+                if(no.visto):
+                    quantidade =len(no.filhos)
+                    quantidadetotal =quantidadetotal + quantidade
         return quantidadetotal
     def eh_posicao_validaparede(self,linha,coluna):
         return 0<= linha <self.linhas and 0 <= coluna <=coluna < self.colunas
     def eh_parede(self,linha,coluna):
         return self.matriz[linha][coluna].estado == "parede"
     def limpar_labirinto(self,limpartudo):
-        self.inicio =None
-        self.fim=None
+        if(limpartudo):
+            self.inicio =None
+            self.fim=None
         for i in range(self.linhas):
             for j in range(self.colunas):
                 no = self.matriz[i][j]
                 no.pai = None
                 no.visto =False
                 no.explorado = False
+                for chave in no.regra:
+                    no.regra[chave]=0
                 no.caminhofinal=False
                 no.filhos.clear()
                 no.heuristica= None
