@@ -407,27 +407,33 @@ class Algoritmos:
         self.listaExplorados = [] 
         self.listaVistos = []
         self.listaFinal = []
+
+        profundidades_visitadas = {}
         
         inicio = self.labirinto.inicio
         fim = self.labirinto.fim
         
         inicio.pai = None
 
-        pilha.append((inicio, 0, None)) 
+        pilha.append((inicio, 0, None))
+
+        self.listaVistos.append(inicio)
         
         sucesso = False
         
         while pilha:
             atual, profundidade, pai_do_atual = pilha.pop() 
             
-            if atual in self.listaExplorados:
+            if atual in profundidades_visitadas and profundidades_visitadas[atual] <= profundidade:
                 continue
+
+            profundidades_visitadas[atual] = profundidade
+
             if pai_do_atual is not None:
                 atual.pai = pai_do_atual
             
             atual.explorado = True
             self.listaExplorados.append(atual)
-            self.listaVistos.append(atual)
 
             if atual.valor != inicio.valor and atual.valor != fim.valor:
                 self.pintar(atual.valor[0], atual.valor[1])
@@ -452,7 +458,13 @@ class Algoritmos:
                 for (l, c) in movimentos:
                     if self.labirinto.eh_posicao_validamover(l, c):
                         vizinho = self.labirinto.pegar_celula(l, c)
-                        
+
+                        if vizinho not in atual.filhos:
+                            atual.filhos.append(vizinho)
+                            
+                        if vizinho not in self.listaVistos:
+                            self.listaVistos.append(vizinho)
+
                         # Só adicionamos aos ABERTOS (pilha) se ele ainda não foi FECHADO
                         if vizinho not in self.listaExplorados:
                             vizinho.visto = True
@@ -463,7 +475,15 @@ class Algoritmos:
                         
         if not sucesso:
             print("Fracasso: Caminho não encontrado pelo DFS Limitado.")
-        return 0
+        
+        dados = {
+            "Nós Expandidos": len(self.listaExplorados),
+            "Nós Visitados": len(self.listaVistos),
+            "Nós na lista final": len(self.listaFinal),
+            "fator de Ramificação": self.labirinto.quantidadeFilhos() / len(self.listaExplorados) if len(self.listaExplorados) > 0 else 0,
+            "Tempo de execução": None
+        }
+        return dados
     
     def reconstruir_caminho(self, no_fim):
         atual = no_fim
@@ -492,6 +512,8 @@ class Algoritmos:
         # Insere a raiz. Custo inicial é 0.
         heapq.heappush(abertos, (0, contador, inicio, None))
         
+        self.listaVistos.append(inicio)
+
         sucesso = False
         
         # enquanto não fracasso (lista de abertos não vazia)
@@ -510,7 +532,6 @@ class Algoritmos:
             # Nó se torna FECHADO
             atual.explorado = True
             self.listaExplorados.append(atual)
-            self.listaVistos.append(atual)
             
             if atual.valor != inicio.valor and atual.valor != fim.valor:
                 self.pintar(atual.valor[0], atual.valor[1])
@@ -534,6 +555,13 @@ class Algoritmos:
             for (l, c) in movimentos:
                 if self.labirinto.eh_posicao_validamover(l, c):
                     vizinho = self.labirinto.pegar_celula(l, c)
+
+                    if vizinho not in atual.filhos:
+                        atual.filhos.append(vizinho)
+                        
+                    # 2. Correção dos nós visitados
+                    if vizinho not in self.listaVistos:
+                        self.listaVistos.append(vizinho)
                     
                     if vizinho not in self.listaExplorados:
                         vizinho.visto = True
@@ -551,7 +579,15 @@ class Algoritmos:
                         
         if not sucesso:
             print("Fracasso: Caminho não encontrado pela Busca Ordenada.")
-        return 0
+        
+        dados = {
+            "Nós Expandidos": len(self.listaExplorados),
+            "Nós Visitados": len(self.listaVistos),
+            "Nós na lista final": len(self.listaFinal),
+            "fator de Ramificação": self.labirinto.quantidadeFilhos() / len(self.listaExplorados) if len(self.listaExplorados) > 0 else 0,
+            "Tempo de execução": None
+        }
+        return dados
     
     def busca_a_estrela(self):
         print("Entrou na Busca A* (A-Star)")
@@ -581,6 +617,8 @@ class Algoritmos:
         # Insere a raiz na fila
         heapq.heappush(abertos, (f_inicial, contador, g_inicial, inicio, None))
         
+        self.listaVistos.append(inicio)
+
         sucesso = False
         
         while abertos:
@@ -599,7 +637,6 @@ class Algoritmos:
             
             atual.explorado = True
             self.listaExplorados.append(atual)
-            self.listaVistos.append(atual)
 
             if atual.valor != inicio.valor and atual.valor != fim.valor:
                 self.pintar(atual.valor[0], atual.valor[1])
@@ -622,6 +659,14 @@ class Algoritmos:
             for (l, c) in movimentos:
                 if self.labirinto.eh_posicao_validamover(l, c):
                     vizinho = self.labirinto.pegar_celula(l, c)
+
+                    if vizinho not in atual.filhos:
+                        atual.filhos.append(vizinho)
+                        
+                    # 2. Correção dos nós visitados
+                    if vizinho not in self.listaVistos:
+                        self.listaVistos.append(vizinho)
+                        
                     
                     if vizinho not in self.listaExplorados:
 
@@ -646,7 +691,15 @@ class Algoritmos:
                         
         if not sucesso:
             print("Fracasso: Caminho não encontrado pela Busca A*.")
-        return 0
+        
+        dados = {
+            "Nós Expandidos": len(self.listaExplorados),
+            "Nós Visitados": len(self.listaVistos),
+            "Nós na lista final": len(self.listaFinal),
+            "fator de Ramificação": self.labirinto.quantidadeFilhos() / len(self.listaExplorados) if len(self.listaExplorados) > 0 else 0,
+            "Tempo de execução": None
+        }
+        return dados
     
     def busca_ida_estrela(self ,):
         print("Entrou na Busca IDA* (Iterative Deepening A*)")
@@ -660,7 +713,8 @@ class Algoritmos:
         verdadeiro_inicio.pai = None
 
         self.listaFinal = []
-
+        total_explorados = 0
+        total_visitados = 0
 
         # O limite inicial é apenas a estimativa (heurística) do início até ao fim
         limite_f = self.manhatan(inicio.valor[0], inicio.valor[1])
@@ -671,6 +725,8 @@ class Algoritmos:
             # Limpamos as listas visuais para esta iteração específica
             self.listaExplorados = []
             self.listaVistos = []
+
+            self.listaVistos.append(verdadeiro_inicio)
             
             # Usamos um Set (conjunto) para rastrear o caminho atual e evitar ciclos (loops infinitos)
             caminho_atual = set([verdadeiro_inicio]) 
@@ -678,14 +734,34 @@ class Algoritmos:
             # Inicia a pesquisa em profundidade recursiva
             sucesso, resultado = self._ida_pesquisa(verdadeiro_inicio, 0, limite_f, caminho_atual, fim)
             
+            # Acumula os nós de cada iteração
+            total_explorados += len(self.listaExplorados)
+            total_visitados += len(self.listaVistos)
+            
             if sucesso:
                 print("\nResultado encontrado pela Busca IDA*!")
                 self.reconstruir_caminho(resultado)
                 self.pintarFinal()
-                return 1
+                
+                dados = {
+                    "Nós Expandidos": total_explorados,
+                    "Nós Visitados": total_visitados,
+                    "Nós na lista final": len(self.listaFinal),
+                    "fator de Ramificação": self.labirinto.quantidadeFilhos() / total_explorados if total_explorados > 0 else 0,
+                    "Tempo de execução": None
+                }
+                return dados
             elif resultado == float('inf'):
                 print("\nFracasso: Caminho não encontrado pela Busca IDA* (espaço esgotado).")
-                return 0
+                
+                dados = {
+                    "Nós Expandidos": total_explorados,
+                    "Nós Visitados": total_visitados,
+                    "Nós na lista final": len(self.listaFinal),
+                    "fator de Ramificação": self.labirinto.quantidadeFilhos() / total_explorados if total_explorados > 0 else 0,
+                    "Tempo de execução": None
+                }
+                return dados
             else:
                 # Se não encontrou, o novo limite passa a ser o menor f(n) que ultrapassou o limite anterior
                 limite_f = resultado 
@@ -699,7 +775,6 @@ class Algoritmos:
         if atual not in self.listaExplorados:
             atual.explorado = True
             self.listaExplorados.append(atual)
-            self.listaVistos.append(atual)
 
             if atual.valor != self.labirinto.inicio.valor and atual.valor != self.labirinto.fim.valor:
                 self.pintar(atual.valor[0], atual.valor[1])
@@ -727,6 +802,12 @@ class Algoritmos:
             if self.labirinto.eh_posicao_validamover(l, c):
                 vizinho = self.labirinto.pegar_celula(l, c)
                 
+                if vizinho not in atual.filhos:
+                    atual.filhos.append(vizinho)
+                
+                if vizinho not in self.listaVistos:
+                    self.listaVistos.append(vizinho)
+
                 # Só exploramos se o vizinho não estiver no caminho atual (evita vai e vem)
                 if vizinho not in caminho_atual:
                     vizinho.visto = True

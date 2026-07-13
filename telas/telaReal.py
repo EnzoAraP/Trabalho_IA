@@ -340,12 +340,14 @@ class Janela(QWidget):
                     self.mostrar_tempo(tempo)
                 
                 case "Busca em Profundidade (Limitada)":
-                    self.algoritmo.busca_profundidade_limitada(5)
+                    dados = self.algoritmo.busca_profundidade_limitada(20)
+                    print(dados)
                     fim = time.perf_counter()
                     tempo = fim - inicio
                     self.mostrar_tempo(tempo)
                 case "Busca Ordenada":
-                    self.algoritmo.busca_ordenada()
+                    dados = self.algoritmo.busca_ordenada()
+                    print(dados)
                     fim = time.perf_counter()
                     tempo = fim - inicio
                     self.mostrar_tempo(tempo)
@@ -355,12 +357,14 @@ class Janela(QWidget):
                     tempo = fim - inicio
                     self.mostrar_tempo(tempo)
                 case "Busca A*":
-                    self.algoritmo.busca_a_estrela()
+                    dados = self.algoritmo.busca_a_estrela()
+                    print(dados)
                     fim = time.perf_counter()
                     tempo = fim - inicio
                     self.mostrar_tempo(tempo)
                 case "Busca IDA":
-                    self.algoritmo.busca_ida_estrela()
+                    dados = self.algoritmo.busca_ida_estrela()
+                    print(dados)
                     fim = time.perf_counter()
                     tempo = fim - inicio
                     self.mostrar_tempo(tempo)
@@ -382,12 +386,14 @@ class Janela(QWidget):
                     self.mostrar_tempo(tempo)
                 
                 case "Busca em Profundidade (Limitada)":
-                    self.algoritmo.busca_profundidade_limitada(5)
+                    dados = self.algoritmo.busca_profundidade_limitada(20)
+                    print(dados)
                     fim = time.perf_counter()
                     tempo = fim - inicio
                     self.mostrar_tempo(tempo)
                 case "Busca Ordenada":
-                    self.algoritmo.busca_ordenada()
+                    dados = self.algoritmo.busca_ordenada()
+                    print(dados)
                     fim = time.perf_counter()
                     tempo = fim - inicio
                     self.mostrar_tempo(tempo)
@@ -397,12 +403,14 @@ class Janela(QWidget):
                     tempo = fim - inicio
                     self.mostrar_tempo(tempo)
                 case "Busca A*":
-                    self.algoritmo.busca_a_estrela()
+                    dados = self.algoritmo.busca_a_estrela()
+                    print(dados)
                     fim = time.perf_counter()
                     tempo = fim - inicio
                     self.mostrar_tempo(tempo)
                 case "Busca IDA":
-                    self.algoritmo.busca_ida_estrela()
+                    dados = self.algoritmo.busca_ida_estrela()
+                    print(dados)
                     fim = time.perf_counter()
                     tempo = fim - inicio
                     self.mostrar_tempo(tempo)
