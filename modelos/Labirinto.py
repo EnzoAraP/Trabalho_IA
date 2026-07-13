@@ -1,8 +1,8 @@
 from modelos.No import No
 class Labirinto:
-    def __init__(self):
-        self.linhas=10
-        self.colunas=10
+    def __init__(self,linha,coluna):
+        self.linhas=linha
+        self.colunas=coluna
         self.inicio = None
         self.fim = None
         self.matriz = [
@@ -40,9 +40,29 @@ class Labirinto:
         if(self.eh_parede(linha,coluna)):
             return False
         return True
-        
+    def quantidadeFilhos(self):
+        quantidadetotal=0
+        for i in range (self.linhas):
+            for j in range (self.colunas):
+                no = self.matriz[i][j]
+                quantidade =len(no.filhos)
+                quantidadetotal =quantidadetotal + quantidade
+        return quantidadetotal
     def eh_posicao_validaparede(self,linha,coluna):
         return 0<= linha <self.linhas and 0 <= coluna <=coluna < self.colunas
     def eh_parede(self,linha,coluna):
         return self.matriz[linha][coluna].estado == "parede"
-    
+    def limpar_labirinto(self,limpartudo):
+        self.inicio =None
+        self.fim=None
+        for i in range(self.linhas):
+            for j in range(self.colunas):
+                no = self.matriz[i][j]
+                no.pai = None
+                no.visto =False
+                no.explorado = False
+                no.caminhofinal=False
+                no.filhos.clear()
+                no.heuristica= None
+                if(limpartudo):
+                    no.estado = "vazio"
