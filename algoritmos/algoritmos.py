@@ -55,7 +55,7 @@ class Algoritmos:
             "Nós Visitados":len(self.listaExplorados),
             "Nós na lista final": len(self.listaFinal),
             "fator de Ramificação":self.labirinto.quantidadeFilhos()/len(self.listaExplorados),
-            "Tempo de execução":None
+           
         }
         
         return dados   
@@ -242,11 +242,14 @@ class Algoritmos:
                     
         
     def CaminhoFinal(self):
+        tamanhocaminhofinal =0
         noatual= self.labirinto.fim
         while noatual != self.labirinto.inicio:
             noatual.caminhofinal=True
             self.pintar(noatual.valor[0],noatual.valor[1])
+            tamanhocaminhofinal=tamanhocaminhofinal+1
             noatual=noatual.pai
+        return tamanhocaminhofinal
     def buscagulosa(self):
         print("Entrou na buscagulosa")
         atual= self.labirinto.inicio
@@ -261,6 +264,7 @@ class Algoritmos:
         sucesso = False
         proximo = None
         discarte = None
+        tamanhoFinal=None
         print(atual.valor)
         while((not fracasso and not sucesso)):
             self.VerificacaoVistos(atual)
@@ -275,7 +279,7 @@ class Algoritmos:
                 if menor.valor==estadoFinal:
                     sucesso=True
                     print("sucesso")
-                    self.CaminhoFinal()
+                    tamanhoFinal=self.CaminhoFinal()
                     break
                 menor.explorado=True
                 self.pintar(menor.valor[0],menor.valor[1])
@@ -288,9 +292,9 @@ class Algoritmos:
         dados ={
             "Nós Expandidos":len(self.listaExplorados),
             "Nós Visitados":len(self.listaVisto),
-            "Nós na lista final": len(self.listaFinal),
+            "Nós na lista final": tamanhoFinal,
             "fator de Ramificação":self.labirinto.quantidadeFilhos()/len(self.listaExplorados),
-            "Tempo de execução":None
+            
         }
         return dados
     def buscagulosaMateria(self):
@@ -307,6 +311,7 @@ class Algoritmos:
         sucesso = False
         proximo = None
         discarte = None
+        
         print(atual.valor)
         while((not fracasso and not sucesso)):
             self.VerificacaoVistos(atual,True)
@@ -349,6 +354,7 @@ class Algoritmos:
         fracasso = False
         sucesso = False
         proximo = None
+        tamanhoFinal = None
         print(atual.valor)
         while((not fracasso and not sucesso)):
             if not self.listaVisto:
@@ -359,7 +365,7 @@ class Algoritmos:
                 if atual.valor==estadoFinal:
                     print("Sucesso")
                     sucesso=True
-                    self.CaminhoFinal()
+                    tamanhoFinal=self.CaminhoFinal()
                 else:
                     if(atual.regra.get("d")==0 or atual.regra.get("b")==0 or atual.regra.get("e")==0  or atual.regra.get("c")==0 ):
                         for direcao,valor in atual.regra.items():
@@ -380,6 +386,7 @@ class Algoritmos:
                                     if(not novoNo.visto):
                                         novoNo.visto=True
                                         novoNo.pai=atual
+                                        atual.filhos.append(novoNo)
                                         self.pintar(novovalor[0],novovalor[1])
                                         self.listaVisto.append(novoNo)
                                     
@@ -388,10 +395,10 @@ class Algoritmos:
                     self.pintar(atual.valor[0],atual.valor[1])
         dados ={
             "Nós Expandidos":len(self.listaExplorados),
-            "Nós Visitados":len(self.listaVisto),
-            "Nós na lista final": len(self.listaFinal),
+            "Nós Visitados":len(self.listaVisto)+len(self.listaExplorados),
+            "Nós na lista final": tamanhoFinal,
             "fator de Ramificação":self.labirinto.quantidadeFilhos()/len(self.listaExplorados),
-            "Tempo de execução":None
+            
         }
         return dados
             
@@ -481,7 +488,6 @@ class Algoritmos:
             "Nós Visitados": len(self.listaVistos),
             "Nós na lista final": len(self.listaFinal),
             "fator de Ramificação": self.labirinto.quantidadeFilhos() / len(self.listaExplorados) if len(self.listaExplorados) > 0 else 0,
-            "Tempo de execução": None
         }
         return dados
     
@@ -585,7 +591,6 @@ class Algoritmos:
             "Nós Visitados": len(self.listaVistos),
             "Nós na lista final": len(self.listaFinal),
             "fator de Ramificação": self.labirinto.quantidadeFilhos() / len(self.listaExplorados) if len(self.listaExplorados) > 0 else 0,
-            "Tempo de execução": None
         }
         return dados
     
@@ -697,7 +702,6 @@ class Algoritmos:
             "Nós Visitados": len(self.listaVistos),
             "Nós na lista final": len(self.listaFinal),
             "fator de Ramificação": self.labirinto.quantidadeFilhos() / len(self.listaExplorados) if len(self.listaExplorados) > 0 else 0,
-            "Tempo de execução": None
         }
         return dados
     
@@ -759,7 +763,6 @@ class Algoritmos:
                     "Nós Visitados": total_visitados,
                     "Nós na lista final": len(self.listaFinal),
                     "fator de Ramificação": self.labirinto.quantidadeFilhos() / total_explorados if total_explorados > 0 else 0,
-                    "Tempo de execução": None
                 }
                 return dados
             else:

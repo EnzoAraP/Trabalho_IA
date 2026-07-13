@@ -327,100 +327,77 @@ class Janela(QWidget):
     def clicar_calcular(self):
         if(self.interacoes==1):
             inicio = time.perf_counter()
-            match self.labelFrame.text():
-                case "Backtracking":
-                    nada=self.algoritmo.backtracking()
-                    fim = time.perf_counter()
-                    tempo = fim - inicio
-                    self.mostrar_tempo(tempo)
-                case "Busca em Largura":
-                    nada=self.algoritmo.buscaLargura()
-                    fim = time.perf_counter()
-                    tempo = fim - inicio
-                    self.mostrar_tempo(tempo)
-                
-                case "Busca em Profundidade (Limitada)":
-                    dados = self.algoritmo.busca_profundidade_limitada(20)
-                    print(dados)
-                    fim = time.perf_counter()
-                    tempo = fim - inicio
-                    self.mostrar_tempo(tempo)
-                case "Busca Ordenada":
-                    dados = self.algoritmo.busca_ordenada()
-                    print(dados)
-                    fim = time.perf_counter()
-                    tempo = fim - inicio
-                    self.mostrar_tempo(tempo)
-                case "Busca Gulosa":
-                    nada=self.algoritmo.buscagulosa()
-                    fim = time.perf_counter()
-                    tempo = fim - inicio
-                    self.mostrar_tempo(tempo)
-                case "Busca A*":
-                    dados = self.algoritmo.busca_a_estrela()
-                    print(dados)
-                    fim = time.perf_counter()
-                    tempo = fim - inicio
-                    self.mostrar_tempo(tempo)
-                case "Busca IDA":
-                    dados = self.algoritmo.busca_ida_estrela()
-                    print(dados)
-                    fim = time.perf_counter()
-                    tempo = fim - inicio
-                    self.mostrar_tempo(tempo)
-                
+            self.executar()
+            fim = time.perf_counter()
+            tempo = fim - inicio
+            self.mostrar_tempo(tempo)     
         else:
             self.dezInteracoes()
-    def dezInteracoes(self):
-        inicio = time.perf_counter()
+    def executar(self):
         match self.labelFrame.text():
                 case "Backtracking":
-                    self.algoritmo.backtracking()
-                    fim = time.perf_counter()
-                    tempo = fim - inicio
-                    self.mostrar_tempo(tempo)
+                    nada=self.algoritmo.backtracking()
+                    return nada
                 case "Busca em Largura":
-                    self.algoritmo.buscaLargura()
-                    fim = time.perf_counter()
-                    tempo = fim - inicio
-                    self.mostrar_tempo(tempo)
-                
+                    nada=self.algoritmo.buscaLargura()
+                    return nada
                 case "Busca em Profundidade (Limitada)":
-                    dados = self.algoritmo.busca_profundidade_limitada(20)
-                    print(dados)
-                    fim = time.perf_counter()
-                    tempo = fim - inicio
-                    self.mostrar_tempo(tempo)
+                    self.algoritmo.busca_profundidade_limitada(5)
                 case "Busca Ordenada":
-                    dados = self.algoritmo.busca_ordenada()
-                    print(dados)
-                    fim = time.perf_counter()
-                    tempo = fim - inicio
-                    self.mostrar_tempo(tempo)
+                    self.algoritmo.busca_ordenada()
                 case "Busca Gulosa":
-                    self.algoritmo.buscagulosa()
-                    fim = time.perf_counter()
-                    tempo = fim - inicio
-                    self.mostrar_tempo(tempo)
+                    nada=self.algoritmo.buscagulosa()
+                    return nada
                 case "Busca A*":
-                    dados = self.algoritmo.busca_a_estrela()
-                    print(dados)
-                    fim = time.perf_counter()
-                    tempo = fim - inicio
-                    self.mostrar_tempo(tempo)
+                    self.algoritmo.busca_a_estrela()
                 case "Busca IDA":
-                    dados = self.algoritmo.busca_ida_estrela()
-                    print(dados)
-                    fim = time.perf_counter()
-                    tempo = fim - inicio
-                    self.mostrar_tempo(tempo)
-                case "Busca Gulosa por vizinhos":
-                    self.algoritmo.buscagulosaMateria()
-                    fim = time.perf_counter()
-                    tempo = fim - inicio
-                    self.mostrar_tempo(tempo)
+                    self.algoritmo.busca_ida_estrela()
+                    
+    def dezInteracoes(self):
+        tempos =[]
+        ListatamanhoVistos=[]
+        ListatamanhoExplorados=[]
+        listatamanhoFinais=[]
+        listaRamificacao=[]
         
+        for i in range(10):
+            self.labirinto.limpar_labirinto(False)
+            self.algoritmo = Algoritmos(self.labirinto,self.atualizar_quadrado)
+            inicio = time.perf_counter()
+            dado=self.executar()
+            ListatamanhoVistos.append(dado["Nós Visitados"])
+            ListatamanhoExplorados.append(dado["Nós Expandidos"])
+            listatamanhoFinais.append(dado["Nós na lista final"])
+            listaRamificacao.append(dado["fator de Ramificação"])
+            fim = time.perf_counter()
+            tempo = fim - inicio
+            tempos.append(tempo)
+            tempototal = sum(tempos)
+            
+            print("Tempos:",tempos)
+        mediatempo = sum(tempos)/len(tempos)
+        mediaVistos= sum(ListatamanhoVistos)/len(ListatamanhoVistos)
+        mediaExplorados= sum(ListatamanhoExplorados)/len(ListatamanhoExplorados)
+        mediaFinais= sum(listatamanhoFinais)/len(listatamanhoFinais)
+        mediaRamificacao= sum(listaRamificacao)/len(listaRamificacao)
+        dados={
+            "Tempo de execução":mediatempo,
+            "Nós Visitados":mediaVistos,
+            "Nós Expandidos":mediaExplorados,
+            "Nós na lista final":mediaFinais,
+            "fator de Ramificação":mediaRamificacao
+        }
+        self.mostrar_dados(dados)
         
+            
+            
+        
+    def mostrar_dados(self,dados):
+        msg = QMessageBox(self)
+        msg.setWindowTitle("Resultado")
+        msg.setText(f"As 10 iterações duraram em média {dados["Tempo de execução"]:.4f} segundos, foram visitados em média {dados["Nós Visitados"]} nós,foram explorados em média {dados["Nós Expandidos"]} nós, em média tiveram {dados["Nós na lista final"]} nós na lista final, e uma média de ramificação de {dados["fator de Ramificação"]:.4f}.")
+        msg.setIcon(QMessageBox.Icon.Information)
+        msg.exec()           
     def mostrar_tempo(self, tempo):
         msg = QMessageBox(self)
         msg.setWindowTitle("Resultado")
