@@ -92,6 +92,7 @@ class Algoritmos:
             Noatual.filhos.append(filho)
             Novono = self.labirinto.pegar_celula(novovalor[0],novovalor[1])
             Novono.pai =Noatual
+            Novono.visto=True
             Novono.explorado=True
             self.pintar(novovalor[0],novovalor[1])
             self.listaFinal.append(Novono)
